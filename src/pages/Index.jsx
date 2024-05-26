@@ -1,7 +1,15 @@
-import { Box, Container, Flex, Heading, Text, VStack, HStack, Link, Spacer } from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, Text, VStack, HStack, Link, Spacer, Button } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import { FaTwitter, FaLinkedin, FaGithub } from "react-icons/fa";
 
 const Index = () => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const storedPosts = JSON.parse(localStorage.getItem("posts")) || [];
+    setPosts(storedPosts);
+  }, []);
   return (
     <Box>
       {/* Navigation Bar */}
@@ -11,23 +19,24 @@ const Index = () => {
         </Box>
         <Spacer />
         <HStack spacing={4}>
-          <Link href="#home" color="white">Home</Link>
-          <Link href="#about" color="white">About</Link>
-          <Link href="#contact" color="white">Contact</Link>
+          <Link as={RouterLink} to="/" color="white">Home</Link>
+          <Link as={RouterLink} to="/about" color="white">About</Link>
+          <Link as={RouterLink} to="/contact" color="white">Contact</Link>
         </HStack>
       </Flex>
 
       {/* Main Content Area */}
       <Container maxW="container.md" mt={10}>
+        <Button as={RouterLink} to="/add-post" colorScheme="blue" mb={4}>
+          Add New Post
+        </Button>
         <VStack spacing={8}>
-          <Box as="article" p={5} shadow="md" borderWidth="1px">
-            <Heading fontSize="xl">First Blog Post</Heading>
-            <Text mt={4}>This is the content of the first blog post. It's just a placeholder for now.</Text>
-          </Box>
-          <Box as="article" p={5} shadow="md" borderWidth="1px">
-            <Heading fontSize="xl">Second Blog Post</Heading>
-            <Text mt={4}>This is the content of the second blog post. It's just a placeholder for now.</Text>
-          </Box>
+          {posts.map((post, index) => (
+            <Box as="article" p={5} shadow="md" borderWidth="1px" key={index}>
+              <Heading fontSize="xl">{post.title}</Heading>
+              <Text mt={4}>{post.content}</Text>
+            </Box>
+          ))}
         </VStack>
       </Container>
 
